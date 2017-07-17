@@ -27,6 +27,9 @@ import static djf.settings.AppPropertyType.SAVE_UNSAVED_WORK_MESSAGE;
 import static djf.settings.AppPropertyType.SAVE_UNSAVED_WORK_TITLE;
 import static djf.settings.AppPropertyType.SAVE_WORK_TITLE;
 import static djf.settings.AppStartupConstants.PATH_WORK;
+import java.io.FileWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -124,6 +127,7 @@ public class AppFileController {
                         a=filename.getText();
                         app.getGUI().a=a;
                         app.getGUI().welcomeLabel.setText("Code Check-"+a);
+                        createNew(a);
                         loadUI();
                         stage.close();
                     }
@@ -133,6 +137,23 @@ public class AppFileController {
 
         stage.sizeToScene();
         stage.show();
+    }
+    
+    public void createNew(String s){
+        try {
+	    // MAYBE WE ALREADY KNOW THE FILE
+	    if (currentWorkFile != null) {
+		saveWork(currentWorkFile);
+	    }
+	    // OTHERWISE WE NEED TO PROMPT THE USER
+	    else {
+		File selectedFile = new File(PATH_WORK+s+".json");
+		if (selectedFile != null) {
+		    saveWork(selectedFile);
+		}
+	    }
+        } catch (IOException ioe) {
+        }
     }
     public void loadUI(){
         app.getWorkspaceComponent().resetWorkspace();
@@ -218,6 +239,7 @@ public class AppFileController {
                         a=filename.getText();
                         app.getGUI().a=a;
                         app.getGUI().nextWindow();
+                        createNew(a);
                         loadUI();
                         stage.close();
                     }
@@ -331,16 +353,6 @@ public class AppFileController {
 	
 	// MARK IT AS SAVED
 	currentWorkFile = selectedFile;
-	saved = true;
-	
-	// TELL THE USER THE FILE HAS BEEN SAVED
-	AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
-	PropertiesManager props = PropertiesManager.getPropertiesManager();
-        dialog.show(props.getProperty(SAVE_COMPLETED_TITLE),props.getProperty(SAVE_COMPLETED_MESSAGE));
-		    
-	// AND REFRESH THE GUI, WHICH WILL ENABLE AND DISABLE
-	// THE APPROPRIATE CONTROLS
-	app.getGUI().updateToolbarControls(saved);	
     }
     
     /**
