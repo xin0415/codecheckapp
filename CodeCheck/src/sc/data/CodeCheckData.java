@@ -7,6 +7,7 @@ package sc.data;
 
 import javafx.collections.ObservableList;
 import djf.components.AppDataComponent;
+import java.io.File;
 import javafx.collections.FXCollections;
 import sc.CodeCheckApp;
 import sc.workspace.CodeCheckWorkspace;
@@ -22,6 +23,7 @@ public class CodeCheckData implements AppDataComponent {
 
     // WE'LL NEED ACCESS TO THE APP TO NOTIFY THE GUI WHEN DATA CHANGES
     public CodeCheckApp app;
+    public ObservableList <File> zipFile;
 
     // NOTE THAT THIS DATA STRUCTURE WILL DIRECTLY STORE THE
     // DATA IN THE ROWS OF THE TABLE VIEW
@@ -34,8 +36,16 @@ public class CodeCheckData implements AppDataComponent {
     public CodeCheckData(CodeCheckApp initApp) {
         // KEEP THIS FOR LATER
         app = initApp;
+        zipFile= FXCollections.observableArrayList();
         
         // MAKE THE SLIDES MODEL
+    }
+    
+    public void addZipFile(File e){
+        zipFile.add(e);
+    }
+    public ObservableList <File> getZipFile(){
+        return zipFile;
     }
 
     @Override

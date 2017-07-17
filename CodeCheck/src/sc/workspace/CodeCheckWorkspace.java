@@ -98,8 +98,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     Label step1Text;
     ProgressBar extractionBar;
     Label progressLabel;
-    TableView blackboardView;
-    TableColumn fileNameColumn;
+    public TableView<File> blackboardView;
+    TableColumn<File,String> fileNameColumn;
     ScrollPane blackboardTableScrollPane;
     FlowPane buttpane;
     FlowPane progflow;
@@ -225,10 +225,13 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         leftPane = new GridPane();
         step1=new Label("Step 1:Extract Submissions");
         step1Text=new Label("Select the submissions below from which to extract student work");
-        blackboardView=new TableView();
+        blackboardView=new TableView<File>();
         fileNameColumn=new TableColumn("Blackboard Submissions");
         fileNameColumn.prefWidthProperty().bind(blackboardView.widthProperty());
         blackboardView.getColumns().add(fileNameColumn);
+        fileNameColumn.setCellValueFactory(
+                new PropertyValueFactory<File, String>("path")
+        );
         blackboardTableScrollPane.setContent(blackboardView);
         blackboardTableScrollPane.setFitToWidth(true);
         blackboardTableScrollPane.setFitToHeight(true);
@@ -263,6 +266,11 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         extractButton.setOnAction(e ->{
             controller.handleExtract();
         });
+        
+        CodeCheckData data = (CodeCheckData)app.getDataComponent();
+        //controller.handleZipFile();
+        ObservableList<File> model = data.getZipFile();
+        blackboardView.setItems(model);
         /////////////////////////////////////////////////////
         
         //////////////////////Step2
@@ -380,6 +388,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     private void initControllers() {
         // NOW LET'S SETUP THE EVENT HANDLING
         controller = new CodeCheckController(app);
+        blackboardView.getSelectionModel().selectedItemProperty().addListener(e->{
+            controller.handleSelectFile();
+        });
     }
     
     
@@ -540,6 +551,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     @Override
     public void resetWorkspace() {
         activeButton();
+        controller.handleZipFile();
     }
     
     @Override

@@ -18,6 +18,7 @@ import static sc.CodeCheckProp.INVALID_IMAGE_PATH_MESSAGE;
 import static sc.CodeCheckProp.INVALID_IMAGE_PATH_TITLE;
 import sc.data.CodeCheckData;
 import sc.workspace.CodeCheckWorkspace;
+import java.util.zip.*;
 
 /**
  * This class provides responses to all workspace interactions, meaning
@@ -30,6 +31,8 @@ import sc.workspace.CodeCheckWorkspace;
 public class CodeCheckController {
     // THE APP PROVIDES ACCESS TO OTHER COMPONENTS AS NEEDED
     CodeCheckApp app;
+    File selectedFile;
+    int selectedIndex;
 
     /**
      * Constructor, note that the app must already be constructed.
@@ -97,32 +100,29 @@ public class CodeCheckController {
         }
         
     }
-    public void handleExtract(){
-         try {
-            // ASK THE USER TO SELECT A DIRECTORY
-            DirectoryChooser dirChooser = new DirectoryChooser();
-            PropertiesManager props = PropertiesManager.getPropertiesManager();
-            dirChooser.setInitialDirectory(new File(props.getProperty(APP_PATH_WORK)));
-            File dir = dirChooser.showDialog(app.getGUI().getWindow());
-            if (dir != null) {
-                File[] files = dir.listFiles();
-                for (File f : files) {
-                    String fileName = f.getName();
-                    if (fileName.toLowerCase().endsWith(".zip")) {
-                        String path = f.getPath();
-                        String caption = "";
-                        Image slideShowImage = loadImage(path);
-                    }
+    public void handleZipFile(){
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        File dir = new File(props.getProperty(APP_PATH_WORK));
+        if (dir != null) {
+            File[] files = dir.listFiles();
+            for (File f : files) {
+                String fileName = f.getName();
+                if (fileName.toLowerCase().endsWith(".zip")) {
+                    String path = f.getPath();
+                    File file=new File(path);
+                    CodeCheckData data = (CodeCheckData)app.getDataComponent();
+                    data.addZipFile(file);
                 }
             }
         }
-        catch(MalformedURLException murle) {
-            PropertiesManager props = PropertiesManager.getPropertiesManager();
-            String title = props.getProperty(INVALID_IMAGE_PATH_TITLE);
-            String message = props.getProperty(INVALID_IMAGE_PATH_MESSAGE);
-            AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
-            dialog.show(title, message);
-        }
+    }
+    
+    public void handleExtract(){
+    }
+    public void handleSelectFile(){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        selectedFile = workspace.blackboardView.getSelectionModel().getSelectedItem();
+        selectedIndex = workspace.blackboardView.getSelectionModel().getSelectedIndex();
     }
     
 }
