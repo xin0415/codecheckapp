@@ -128,6 +128,7 @@ public class AppFileController {
                         app.getGUI().a=a;
                         app.getGUI().welcomeLabel.setText("Code Check-"+a);
                         createNew(a);
+                        app.getWorkspaceComponent().resetWorkspace();
                         loadUI();
                         stage.close();
                     }
