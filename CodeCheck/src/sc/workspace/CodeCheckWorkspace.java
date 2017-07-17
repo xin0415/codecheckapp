@@ -15,7 +15,10 @@ import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.ui.AppGUI.CLASS_BORDERED_PANE;
 import djf.ui.AppMessageDialogSingleton;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -264,7 +267,11 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         editPane.add(textScroll, 0, 2);
         
         extractButton.setOnAction(e ->{
-            controller.handleExtract();
+            try {
+                controller.handleExtract();
+            } catch (IOException ex) {
+                Logger.getLogger(CodeCheckWorkspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         
         CodeCheckData data = (CodeCheckData)app.getDataComponent();

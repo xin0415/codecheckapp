@@ -6,7 +6,12 @@
 package sc.workspace;
 
 import djf.ui.AppMessageDialogSingleton;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javafx.scene.image.Image;
@@ -117,7 +122,28 @@ public class CodeCheckController {
         }
     }
     
-    public void handleExtract(){
+    public void handleExtract() throws IOException{
+       
+        ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(selectedFile.getCanonicalFile())));
+        ZipEntry zip=null;
+        String msg="";
+        
+        while((zip=zipInputStream.getNextEntry())!=null){
+            try{
+                byte[] buffer=new byte[8000];
+                String unzippedFile=selectedFile.getParent()+"/"+zip.getName();
+                FileOutputStream fileOutputStream=new FileOutputStream(unzippedFile);
+                int size;
+                while ((size=zipInputStream.read(buffer))!=-1){
+                    fileOutputStream.write(buffer,0,size);
+                }
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                msg+=unzippedFile+"\n";
+                System.out.println(msg);
+            }catch(Exception ex){
+            }}
+            zipInputStream.close();
     }
     public void handleSelectFile(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
