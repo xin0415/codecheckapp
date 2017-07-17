@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.collections.ObservableList;
@@ -97,9 +98,14 @@ public class CodeCheckFiles implements AppFileComponent {
 	
 	JsonArray slidesArray = slidesArrayBuilder.build();
         
+        JsonObject slideJson = Json.createObjectBuilder()
+		    .add("named submissions","")
+                    .add("projects","")
+                    .add("code","").build();
+        
 	// THEN PUT IT ALL TOGETHER IN A JsonObject
 	JsonObject dataManagerJSO = Json.createObjectBuilder()
-		.add(JSON_SLIDES, slidesArray)
+		.add("named submissions", "").add("projects", "").add("code","")
 		.build();
 	
 	// AND NOW OUTPUT IT TO A JSON FILE WITH PRETTY PRINTING

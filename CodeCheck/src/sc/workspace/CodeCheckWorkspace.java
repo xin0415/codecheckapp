@@ -259,6 +259,10 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         editPane.add(progflow, 0, 0);
         editPane.add(extractButton, 0, 1);
         editPane.add(textScroll, 0, 2);
+        
+        extractButton.setOnAction(e ->{
+            controller.handleExtract();
+        });
         /////////////////////////////////////////////////////
         
         //////////////////////Step2

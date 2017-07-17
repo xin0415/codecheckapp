@@ -97,4 +97,32 @@ public class CodeCheckController {
         }
         
     }
+    public void handleExtract(){
+         try {
+            // ASK THE USER TO SELECT A DIRECTORY
+            DirectoryChooser dirChooser = new DirectoryChooser();
+            PropertiesManager props = PropertiesManager.getPropertiesManager();
+            dirChooser.setInitialDirectory(new File(props.getProperty(APP_PATH_WORK)));
+            File dir = dirChooser.showDialog(app.getGUI().getWindow());
+            if (dir != null) {
+                File[] files = dir.listFiles();
+                for (File f : files) {
+                    String fileName = f.getName();
+                    if (fileName.toLowerCase().endsWith(".zip")) {
+                        String path = f.getPath();
+                        String caption = "";
+                        Image slideShowImage = loadImage(path);
+                    }
+                }
+            }
+        }
+        catch(MalformedURLException murle) {
+            PropertiesManager props = PropertiesManager.getPropertiesManager();
+            String title = props.getProperty(INVALID_IMAGE_PATH_TITLE);
+            String message = props.getProperty(INVALID_IMAGE_PATH_MESSAGE);
+            AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+            dialog.show(title, message);
+        }
+    }
+    
 }
