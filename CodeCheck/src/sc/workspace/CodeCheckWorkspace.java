@@ -298,7 +298,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         renameLabel=new Label("Rename Progress");
         renameBar= new ProgressBar();
         renameBar.setPrefWidth(200);
-        renameBar.setProgress(0.45);
+        renameBar.setProgress(0);
         renameFlow.getChildren().addAll(renameLabel,renameBar);
         renButton=new Button("Rename");
         renButton.setOnAction(e->{

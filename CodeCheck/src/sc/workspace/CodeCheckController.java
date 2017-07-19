@@ -193,6 +193,7 @@ public class CodeCheckController {
     }
     
     public void handleRename(){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         String s="Successfully renamed submissions:\n";
         for(int j=0;j<data.getUnzipFile().size();j++){
@@ -212,12 +213,14 @@ public class CodeCheckController {
         }
         String newname=oldname.substring(k, i);
         s+="\n"+newname+"\n";
+        workspace.renameBar.setProgress((double)j/data.getUnzipFile().size());
+        System.out.println((double)j/data.getUnzipFile().size());
         File file=new File(selectedFile.getParent()+"/"+newname+".zip");
         data.getUnzipFile().get(j).renameTo(file);
         data.addStuFile(file);
        }
        s+="\nRename Errors:\nnone";
-       CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
        workspace.extractText.setText(s);
+       workspace.renameBar.setProgress(1);
     }
 }
