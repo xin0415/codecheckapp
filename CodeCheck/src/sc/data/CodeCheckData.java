@@ -24,6 +24,8 @@ public class CodeCheckData implements AppDataComponent {
     // WE'LL NEED ACCESS TO THE APP TO NOTIFY THE GUI WHEN DATA CHANGES
     public CodeCheckApp app;
     public ObservableList <File> zipFile;
+    public ObservableList <File> unzipFile;
+    
 
     // NOTE THAT THIS DATA STRUCTURE WILL DIRECTLY STORE THE
     // DATA IN THE ROWS OF THE TABLE VIEW
@@ -37,6 +39,7 @@ public class CodeCheckData implements AppDataComponent {
         // KEEP THIS FOR LATER
         app = initApp;
         zipFile= FXCollections.observableArrayList();
+        unzipFile=FXCollections.observableArrayList();
         
         // MAKE THE SLIDES MODEL
     }
@@ -46,6 +49,13 @@ public class CodeCheckData implements AppDataComponent {
     }
     public ObservableList <File> getZipFile(){
         return zipFile;
+    }
+    public void addUnzipFile(File e){
+        unzipFile.add(e);
+    }
+    
+    public ObservableList <File> getUnzipFile(){
+        return unzipFile;
     }
 
     @Override

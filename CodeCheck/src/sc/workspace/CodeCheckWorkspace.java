@@ -110,14 +110,14 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     public Button refreshButton;
     public Button viewButton;
     public Button extractButton;
-    TextArea extractText;
+    public TextArea extractText;
     ScrollPane textScroll;
     
     // handle step2
     Label step2;
     Label step2Text;
-    TableView studentSubmitView;
-    TableColumn studentSubmitColumn;
+    public TableView<File> studentSubmitView;
+    TableColumn <File,String> studentSubmitColumn;
     ScrollPane studentSubScroll;
     FlowPane renameFlow;
     ProgressBar renameBar;
@@ -233,7 +233,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         fileNameColumn.prefWidthProperty().bind(blackboardView.widthProperty());
         blackboardView.getColumns().add(fileNameColumn);
         fileNameColumn.setCellValueFactory(
-                new PropertyValueFactory<File, String>("path")
+                new PropertyValueFactory<File,String>("path")
         );
         blackboardTableScrollPane.setContent(blackboardView);
         blackboardTableScrollPane.setFitToWidth(true);
@@ -253,7 +253,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         progflow=new FlowPane();
         extractionBar=new ProgressBar();
         extractionBar.setPrefWidth(200);
-        extractionBar.setProgress(0.45);
+        extractionBar.setProgress(0);
         extractionBar.setId("47%");
         extractButton=new Button("Extract");
         extractText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
@@ -286,6 +286,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         studentSubmitView=new TableView();
         studentSubmitColumn=new TableColumn("Student Submissions");
         studentSubmitColumn.prefWidthProperty().bind(blackboardView.widthProperty());
+        studentSubmitColumn.setCellValueFactory(
+                new PropertyValueFactory<File,String>("path")
+        );
         studentSubmitView.getColumns().add(studentSubmitColumn);
         studentSubScroll= new ScrollPane();
         studentSubScroll.setContent(studentSubmitView);
@@ -298,6 +301,10 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         renameBar.setProgress(0.45);
         renameFlow.getChildren().addAll(renameLabel,renameBar);
         renButton=new Button("Rename");
+        renButton.setOnAction(e->{
+            controller.handleRename();
+        });
+        
         
         /////////////////// handle step3
         step3=new Label("Step 3: Unzip Student Submissions");
