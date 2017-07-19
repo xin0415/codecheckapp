@@ -102,6 +102,8 @@ public class CodeCheckController {
         }else if (s==3){
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
          workspace.extractText.clear();
+         CodeCheckData data = (CodeCheckData)app.getDataComponent();
+         workspace.studentFileView.setItems(data.getStuFile());
          workspace.toStep3();
         }else if(s==4){
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
@@ -212,6 +214,7 @@ public class CodeCheckController {
         s+="\n"+newname+"\n";
         File file=new File(selectedFile.getParent()+"/"+newname+".zip");
         data.getUnzipFile().get(j).renameTo(file);
+        data.addStuFile(file);
        }
        s+="\nRename Errors:\nnone";
        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();

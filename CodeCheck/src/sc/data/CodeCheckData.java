@@ -25,7 +25,7 @@ public class CodeCheckData implements AppDataComponent {
     public CodeCheckApp app;
     public ObservableList <File> zipFile;
     public ObservableList <File> unzipFile;
-    
+    public ObservableList<File> stuFile;
 
     // NOTE THAT THIS DATA STRUCTURE WILL DIRECTLY STORE THE
     // DATA IN THE ROWS OF THE TABLE VIEW
@@ -40,6 +40,7 @@ public class CodeCheckData implements AppDataComponent {
         app = initApp;
         zipFile= FXCollections.observableArrayList();
         unzipFile=FXCollections.observableArrayList();
+        stuFile=FXCollections.observableArrayList();
         
         // MAKE THE SLIDES MODEL
     }
@@ -56,6 +57,12 @@ public class CodeCheckData implements AppDataComponent {
     
     public ObservableList <File> getUnzipFile(){
         return unzipFile;
+    }
+    public void addStuFile(File e){
+        stuFile.add(e);
+    }
+    public ObservableList <File> getStuFile(){
+        return stuFile;
     }
 
     @Override

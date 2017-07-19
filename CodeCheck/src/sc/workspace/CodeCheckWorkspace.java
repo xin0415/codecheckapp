@@ -127,8 +127,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     // handle step3
     Label step3;
     Label step3Text;
-    TableView studentFileView;
-    TableColumn studentFileColumn;
+    public TableView<File> studentFileView;
+    TableColumn <File,String> studentFileColumn;
     ScrollPane studentFileScroll;
     FlowPane unzipPane;
     Label unzipLabel;
@@ -312,6 +312,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         studentFileView=new TableView();
         studentFileColumn=new TableColumn("Student ZIP Files");
         studentFileColumn.prefWidthProperty().bind(blackboardView.widthProperty());
+        studentFileColumn.setCellValueFactory(
+                new PropertyValueFactory<File,String>("path")
+        );
         studentFileView.getColumns().add(studentFileColumn);
         studentFileScroll= new ScrollPane();
         studentFileScroll.setContent(studentFileView);
