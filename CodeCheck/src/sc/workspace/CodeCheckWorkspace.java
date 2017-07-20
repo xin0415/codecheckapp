@@ -481,10 +481,6 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
             controller.handleSelectFile(step);
         });
         
-        
-        
-        
-        
         removeButton.setOnAction(e->{
             controller.handleRemoveRequest(step);
         });

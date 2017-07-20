@@ -308,7 +308,7 @@ public class CodeCheckController {
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         String mse="Successful code extraction:\n";
         String msee="\nCode Extraction Errors\nnone";
-        for(int i=0;i<data.getStuFile().size();i++){
+        for(int i=0;i<data.getSt4().size();i++){
             mse+=data.getSt4().get(i).getFileName()+"\n";
         if(workspace.cb1.isSelected()==true)
             mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb1.getText(),data.getSt4().get(i).getPath());
