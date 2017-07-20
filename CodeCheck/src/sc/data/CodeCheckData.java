@@ -23,9 +23,9 @@ public class CodeCheckData implements AppDataComponent {
 
     // WE'LL NEED ACCESS TO THE APP TO NOTIFY THE GUI WHEN DATA CHANGES
     public CodeCheckApp app;
-    public ObservableList <File> zipFile;
-    public ObservableList <File> unzipFile;
-    public ObservableList<File> stuFile;
+    public ObservableList <CodeHW> zipFile;
+    public ObservableList <CodeHW> unzipFile;
+    public ObservableList<CodeHW> stuFile;
     public ObservableList<Homework> step4File;
 
     // NOTE THAT THIS DATA STRUCTURE WILL DIRECTLY STORE THE
@@ -47,23 +47,23 @@ public class CodeCheckData implements AppDataComponent {
         // MAKE THE SLIDES MODEL
     }
     
-    public void addZipFile(File e){
+    public void addZipFile(CodeHW e){
         zipFile.add(e);
     }
-    public ObservableList <File> getZipFile(){
+    public ObservableList <CodeHW> getZipFile(){
         return zipFile;
     }
-    public void addUnzipFile(File e){
+    public void addUnzipFile(CodeHW e){
         unzipFile.add(e);
     }
     
-    public ObservableList <File> getUnzipFile(){
+    public ObservableList <CodeHW> getUnzipFile(){
         return unzipFile;
     }
-    public void addStuFile(File e){
+    public void addStuFile(CodeHW e){
         stuFile.add(e);
     }
-    public ObservableList <File> getStuFile(){
+    public ObservableList <CodeHW> getStuFile(){
         return stuFile;
     }
     public ObservableList <Homework> getSt4(){

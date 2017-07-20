@@ -29,6 +29,7 @@ import sc.workspace.CodeCheckWorkspace;
 import java.util.zip.*;
 import java.util.*;
 import javafx.stage.FileChooser;
+import sc.data.CodeHW;
 import sc.data.Homework;
 
 /**
@@ -134,7 +135,8 @@ public class CodeCheckController {
                     String path = f.getPath();
                     File file=new File(path);
                     CodeCheckData data = (CodeCheckData)app.getDataComponent();
-                    data.addZipFile(file);
+                    CodeHW code=new CodeHW(file.getName(),file);
+                    data.addZipFile(code);
                 }
             }
         }
@@ -171,8 +173,9 @@ public class CodeCheckController {
                 workspace.extractionBar.setProgress(i/filesize);
                 System.out.println(i/filesize);
                 File file=new File(unzippedFile);
+                CodeHW code =new CodeHW(file.getName(),file);
                 if (file.getName().toLowerCase().endsWith(".zip")) {
-                    data.addUnzipFile(file);
+                    data.addUnzipFile(code);
                 }
                 
             }catch(Exception ex){
@@ -186,7 +189,7 @@ public class CodeCheckController {
     }
     public void handleSelectFile(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-        selectedFile = workspace.blackboardView.getSelectionModel().getSelectedItem();
+        selectedFile = workspace.blackboardView.getSelectionModel().getSelectedItem().getFile();
         selectedIndex = workspace.blackboardView.getSelectionModel().getSelectedIndex();
     }
     
@@ -203,7 +206,7 @@ public class CodeCheckController {
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         String s="Successfully renamed submissions:\n";
         for(int j=0;j<data.getUnzipFile().size();j++){
-        String oldname=data.getUnzipFile().get(j).getName();
+        String oldname=data.getUnzipFile().get(j).getFile().getName();
         s+=oldname;
         int i;
         boolean b=false;
@@ -222,8 +225,9 @@ public class CodeCheckController {
         workspace.renameBar.setProgress((double)j/data.getUnzipFile().size());
         System.out.println((double)j/data.getUnzipFile().size());
         File file=new File(selectedFile.getParent()+"/"+newname+".zip");
-        data.getUnzipFile().get(j).renameTo(file);
-        data.addStuFile(file);
+        data.getUnzipFile().get(j).getFile().renameTo(file);
+        CodeHW code=new CodeHW(file.getName(),file);
+        data.addStuFile(code);
        }
        s+="\nRename Errors:\nnone";
        workspace.extractText.setText(s);
@@ -237,7 +241,7 @@ public class CodeCheckController {
         
         for(int i=0;i<data.getStuFile().size();i++)
         {
-        String name=data.getStuFile().get(i).getName();
+        String name=data.getStuFile().get(i).getFile().getName();
         int k=0;
         for(int j=0;j<name.length();j++){
             if(name.charAt(j)=='.')
@@ -246,14 +250,14 @@ public class CodeCheckController {
                 k++;
         }
         String dirname=name.substring(0, k);
-        boolean success=(new File(data.getStuFile().get(i).getParent()+"/"+dirname)).mkdirs();
-        createUnzip(data.getStuFile().get(i),data.getStuFile().get(i).getParent()+"/"+dirname);
-        Homework h=new Homework(dirname,(data.getStuFile().get(i).getParent()+"/"+dirname));
+        boolean success=(new File(data.getStuFile().get(i).getFile().getParent()+"/"+dirname)).mkdirs();
+        createUnzip(data.getStuFile().get(i).getFile(),data.getStuFile().get(i).getFile().getParent()+"/"+dirname);
+        Homework h=new Homework(dirname,(data.getStuFile().get(i).getFile().getParent()+"/"+dirname));
         data.addSt4(h);
         if(success==false)
-            ms+=data.getStuFile().get(i).getName()+"\n";
+            ms+=data.getStuFile().get(i).getFile().getName()+"\n";
         else
-            ems+=data.getStuFile().get(i).getName()+"\n";
+            ems+=data.getStuFile().get(i).getFile().getName()+"\n";
         
         workspace.unzipBar.setProgress((double)i/data.getStuFile().size());
         System.out.println((double)i/data.getStuFile().size());
@@ -291,18 +295,18 @@ public class CodeCheckController {
         for(int i=0;i<data.getStuFile().size();i++){
             mse+=data.getSt4().get(i).getFileName()+"\n";
         if(workspace.cb1.isSelected()==true)
-            mse+=readZip(data.getStuFile().get(i),workspace.cb1.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb1.getText());
         if(workspace.cb2.isSelected()==true)
-            mse+=readZip(data.getStuFile().get(i),workspace.cb2.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb2.getText());
         if(workspace.cb3.isSelected()==true){
-            mse+=readZip(data.getStuFile().get(i),".c");
-            mse+=readZip(data.getStuFile().get(i),".h");
-            mse+=readZip(data.getStuFile().get(i),".cpp");
+            mse+=readZip(data.getStuFile().get(i).getFile(),".c");
+            mse+=readZip(data.getStuFile().get(i).getFile(),".h");
+            mse+=readZip(data.getStuFile().get(i).getFile(),".cpp");
         }
         if(workspace.cb4.isSelected()==true)
-            mse+=readZip(data.getStuFile().get(i),workspace.cb4.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb4.getText());
         if(workspace.cb5.isSelected()==true&&!(workspace.cb5L.getText().isEmpty()))
-            mse+=readZip(data.getStuFile().get(i),workspace.cb5L.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb5L.getText());
         workspace.CodeBar.setProgress((double)i/data.getStuFile().size());
         System.out.println((double)i/data.getStuFile().size());
         }
@@ -318,9 +322,15 @@ public class CodeCheckController {
         ZipEntry ze = (ZipEntry) entries.nextElement();
         
         if (ze.getName().toLowerCase().endsWith(t)) {
-          s+=ze.getName()+"\n";
-          long size = ze.getSize();
-          if (size > 0) {
+            
+            for(int k=ze.getName().length()-1;k>=0;k--){
+                if(ze.getName().charAt(k)=='/'){
+                    s+=ze.getName().substring(k+1)+"\n"; 
+                    break;
+                }
+            }
+            long size = ze.getSize();
+            if (size > 0) {
             BufferedReader br = new BufferedReader(
                 new InputStreamReader(zf.getInputStream(ze)));
             br.close();

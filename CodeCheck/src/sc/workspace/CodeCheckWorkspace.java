@@ -60,6 +60,7 @@ import static sc.CodeCheckProp.PATH_PROMPT_TEXT;
 import static sc.CodeCheckProp.NEXT_BUTTON;
 import static sc.CodeCheckProp.UPDATE_BUTTON_TEXT;
 import sc.data.CodeCheckData;
+import sc.data.CodeHW;
 import sc.data.Homework;
 import static sc.style.CodeCheckStyle.CLASS_EDIT_BUTTON;
 import static sc.style.CodeCheckStyle.CLASS_EDIT_SLIDER;
@@ -102,8 +103,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     Label step1Text;
     ProgressBar extractionBar;
     Label progressLabel;
-    public TableView<File> blackboardView;
-    TableColumn<File,String> fileNameColumn;
+    public TableView<CodeHW> blackboardView;
+    TableColumn<CodeHW,String> fileNameColumn;
     ScrollPane blackboardTableScrollPane;
     FlowPane buttpane;
     FlowPane progflow;
@@ -117,8 +118,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     // handle step2
     Label step2;
     Label step2Text;
-    public TableView<File> studentSubmitView;
-    TableColumn <File,String> studentSubmitColumn;
+    public TableView<CodeHW> studentSubmitView;
+    TableColumn <CodeHW,String> studentSubmitColumn;
     ScrollPane studentSubScroll;
     FlowPane renameFlow;
     ProgressBar renameBar;
@@ -128,8 +129,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     // handle step3
     Label step3;
     Label step3Text;
-    public TableView<File> studentFileView;
-    TableColumn <File,String> studentFileColumn;
+    public TableView<CodeHW> studentFileView;
+    TableColumn <CodeHW,String> studentFileColumn;
     ScrollPane studentFileScroll;
     FlowPane unzipPane;
     Label unzipLabel;
@@ -229,12 +230,12 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         leftPane = new GridPane();
         step1=new Label("Step 1:Extract Submissions");
         step1Text=new Label("Select the submissions below from which to extract student work");
-        blackboardView=new TableView<File>();
+        blackboardView=new TableView<CodeHW>();
         fileNameColumn=new TableColumn("Blackboard Submissions");
         fileNameColumn.prefWidthProperty().bind(blackboardView.widthProperty());
         blackboardView.getColumns().add(fileNameColumn);
         fileNameColumn.setCellValueFactory(
-                new PropertyValueFactory<File,String>("path")
+                new PropertyValueFactory<CodeHW,String>("fileName")
         );
         blackboardTableScrollPane.setContent(blackboardView);
         blackboardTableScrollPane.setFitToWidth(true);
@@ -277,7 +278,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         //controller.handleZipFile();
-        ObservableList<File> model = data.getZipFile();
+        ObservableList<CodeHW> model = data.getZipFile();
         blackboardView.setItems(model);
         /////////////////////////////////////////////////////
         
@@ -288,7 +289,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         studentSubmitColumn=new TableColumn("Student Submissions");
         studentSubmitColumn.prefWidthProperty().bind(blackboardView.widthProperty());
         studentSubmitColumn.setCellValueFactory(
-                new PropertyValueFactory<File,String>("path")
+                new PropertyValueFactory<CodeHW,String>("fileName")
         );
         studentSubmitView.getColumns().add(studentSubmitColumn);
         studentSubScroll= new ScrollPane();
@@ -314,7 +315,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         studentFileColumn=new TableColumn("Student ZIP Files");
         studentFileColumn.prefWidthProperty().bind(blackboardView.widthProperty());
         studentFileColumn.setCellValueFactory(
-                new PropertyValueFactory<File,String>("path")
+                new PropertyValueFactory<CodeHW,String>("fileName")
         );
         studentFileView.getColumns().add(studentFileColumn);
         studentFileScroll= new ScrollPane();
