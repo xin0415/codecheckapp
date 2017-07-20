@@ -101,25 +101,26 @@ public class CodeCheckController {
         }else if(s==2){
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
          CodeCheckData data = (CodeCheckData)app.getDataComponent();
+         workspace.studentSubmitText.setDisable(false);
          workspace.studentSubmitView.setItems(data.getUnzipFile());
-         workspace.extractText.clear();
          workspace.studentSubmitView.refresh();
          workspace.toStep2();
         }else if (s==3){
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-         workspace.extractText.clear();
          CodeCheckData data = (CodeCheckData)app.getDataComponent();
          workspace.studentFileView.setItems(data.getStuFile());
+         workspace.unzipText.setDisable(false);
          workspace.toStep3();
         }else if(s==4){
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-         workspace.extractText.clear();
          CodeCheckData data = (CodeCheckData)app.getDataComponent();
+         workspace.workdText.setDisable(false);
          workspace.workView.setItems(data.getSt4());
          workspace.toStep4();
         }else{
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-         workspace.extractText.clear();
+         workspace.checkText.clear();
+         workspace.checkText.setDisable(false);
          workspace.toStep5();
         }
         
@@ -230,7 +231,7 @@ public class CodeCheckController {
         data.addStuFile(code);
        }
        s+="\nRename Errors:\nnone";
-       workspace.extractText.setText(s);
+       workspace.studentSubmitText.setText(s);
        workspace.renameBar.setProgress(1);
     }
     public void handleUnzip() throws IOException{
@@ -251,10 +252,9 @@ public class CodeCheckController {
         }
         String dirname=name.substring(0, k);
         boolean success=(new File(data.getStuFile().get(i).getFile().getParent()+"/"+dirname)).mkdirs();
-        createUnzip(data.getStuFile().get(i).getFile(),data.getStuFile().get(i).getFile().getParent()+"/"+dirname);
         Homework h=new Homework(dirname,(data.getStuFile().get(i).getFile().getParent()+"/"+dirname));
         data.addSt4(h);
-        if(success==false)
+        if(success==true)
             ms+=data.getStuFile().get(i).getFile().getName()+"\n";
         else
             ems+=data.getStuFile().get(i).getFile().getName()+"\n";
@@ -262,29 +262,8 @@ public class CodeCheckController {
         workspace.unzipBar.setProgress((double)i/data.getStuFile().size());
         System.out.println((double)i/data.getStuFile().size());
         }
-        workspace.extractText.setText(ms+ems);
+        workspace.unzipText.setText(ms+ems);
         workspace.unzipBar.setProgress(1);
-    }
-    public void createUnzip(File f,String p) throws IOException{
-        ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
-        ZipEntry zip=null;
-        
-        while((zip=zipInputStream.getNextEntry())!=null){
-            try{
-                byte[] buffer=new byte[8000];
-                String unzippedFile=p+"/"+zip.getName();
-                FileOutputStream fileOutputStream=new FileOutputStream(unzippedFile);
-                int size;
-                while ((size=zipInputStream.read(buffer))!=-1){
-                    fileOutputStream.write(buffer,0,size);
-                }
-                
-                fileOutputStream.flush();
-                fileOutputStream.close();
-                
-            }catch(Exception ex){
-            }}
-            zipInputStream.close();
     }
     
     public void handleExtractCode(){
@@ -310,7 +289,7 @@ public class CodeCheckController {
         workspace.CodeBar.setProgress((double)i/data.getStuFile().size());
         System.out.println((double)i/data.getStuFile().size());
         }
-        workspace.extractText.setText(mse+msee);
+        workspace.workdText.setText(mse+msee);
         workspace.CodeBar.setProgress(1);
     }
     public String readZip(File f,String t){

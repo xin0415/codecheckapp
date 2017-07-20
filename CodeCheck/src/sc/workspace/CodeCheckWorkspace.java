@@ -123,6 +123,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     ScrollPane studentSubScroll;
     FlowPane renameFlow;
     ProgressBar renameBar;
+    public TextArea studentSubmitText;
+    ScrollPane studentSubmitScrooll;
     Label renameLabel;
     Button renButton;
     
@@ -136,6 +138,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     Label unzipLabel;
     ProgressBar unzipBar;
     Button unzipButton;
+    public TextArea unzipText;
+    ScrollPane unzipScroll;
     
     // handle step4
     Label step4;
@@ -156,6 +160,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     Label CodeLabel;
     ProgressBar CodeBar;
     Button ExtractCodeButton;
+    public TextArea workdText;
+    ScrollPane workdScroll;
     
     // handle step 5
     Label step5;
@@ -169,6 +175,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     ProgressBar checkBar;
     Button codeCheckButton;
     Button viewResultButton;
+    public TextArea checkText;
+    ScrollPane checkScroll;
     
     /**
      * The constructor initializes the user interface for the
@@ -258,9 +266,11 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         extractionBar.setProgress(0);
         extractionBar.setId("47%");
         extractButton=new Button("Extract");
+        
         extractText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
         extractText.setDisable(true);
         extractText.setPrefHeight(500);
+        
         textScroll=new ScrollPane();
         textScroll.setContent(extractText);
         progflow.getChildren().addAll(progressLabel,extractionBar);
@@ -303,7 +313,15 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         renameBar.setProgress(0);
         renameFlow.getChildren().addAll(renameLabel,renameBar);
         renButton=new Button("Rename");
+        
+        studentSubmitText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
+        studentSubmitText.setDisable(true);
+        studentSubmitText.setPrefHeight(500);
+        studentSubmitScrooll=new ScrollPane();
+        studentSubmitScrooll.setContent(studentSubmitText);
+        
         renButton.setOnAction(e->{
+            renButton.setDisable(true);
             controller.handleRename();
         });
         
@@ -329,8 +347,16 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         unzipBar.setProgress(0);
         unzipPane.getChildren().addAll(unzipLabel, unzipBar);
         unzipButton=new Button("Unzip");
+        
+        unzipText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
+        unzipText.setDisable(true);
+        unzipText.setPrefHeight(500);
+        
+        unzipScroll=new ScrollPane();
+        unzipScroll.setContent(unzipText);
         unzipButton.setOnAction(e->{
             try {
+                unzipButton.setDisable(true);
                 controller.handleUnzip();
             } catch (IOException ex) {
                 Logger.getLogger(CodeCheckWorkspace.class.getName()).log(Level.SEVERE, null, ex);
@@ -376,7 +402,15 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         CodePane.getChildren().addAll(CodeLabel,CodeBar);
         ExtractCodeButton=new Button("Extract Code");
         
+        workdText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
+        workdText.setDisable(true);
+        workdText.setPrefHeight(500);
+        
+        workdScroll=new ScrollPane();
+        workdScroll.setContent(workdText);
+        
         ExtractCodeButton.setOnAction(e->{
+            ExtractCodeButton.setDisable(true);
             controller.handleExtractCode();
         });
         
@@ -401,6 +435,12 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         codeCheckButton=new Button("Code Check");
         viewResultButton=new Button("View Result");
         cvPane.getChildren().addAll(codeCheckButton,viewResultButton);
+        
+        checkText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
+        checkText.setDisable(true);
+        checkText.setPrefHeight(500);
+        checkScroll=new ScrollPane();
+        checkScroll.setContent(checkText);
         
         // AND THEN PUT EVERYTHING INSIDE THE WORKSPACE
         app.getGUI().getTopToolbarPane().getChildren().add(editImagesToolbar);
@@ -514,7 +554,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
         editPane.add(renameFlow, 0, 0);
         editPane.add(renButton, 0, 1);
-        editPane.add(textScroll, 0, 2);
+        editPane.add(studentSubmitScrooll, 0, 2);
         
         workspaceBorderPane.setCenter(leftPane);
         workspaceBorderPane.setRight(editPane);
@@ -532,7 +572,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
         editPane.add(unzipPane, 0, 0);
         editPane.add(unzipButton, 0, 1);
-        editPane.add(textScroll, 0, 2);
+        editPane.add(unzipScroll, 0, 2);
         
         workspaceBorderPane.setCenter(leftPane);
         workspaceBorderPane.setRight(editPane);
@@ -557,7 +597,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
         editPane.add(CodePane, 0, 0);
         editPane.add(ExtractCodeButton, 0, 1);
-        editPane.add(textScroll, 0, 2);
+        editPane.add(workdScroll, 0, 2);
         
         workspaceBorderPane.setCenter(leftPane);
         workspaceBorderPane.setRight(editPane);
@@ -576,7 +616,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
         editPane.add(checkPane, 0, 0);
         editPane.add(cvPane, 0, 1);
-        editPane.add(textScroll, 0, 2);
+        editPane.add(checkScroll, 0, 2);
         
         workspaceBorderPane.setCenter(leftPane);
         workspaceBorderPane.setRight(editPane);
