@@ -432,11 +432,12 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         checkLabel=new Label("Check Progress");
         checkBar=new ProgressBar();
         checkBar.setPrefWidth(200);
-        checkBar.setProgress(0.45);
+        checkBar.setProgress(0);
         checkPane.getChildren().addAll(checkLabel,checkBar);
         cvPane=new FlowPane();
         codeCheckButton=new Button("Code Check");
         viewResultButton=new Button("View Result");
+        viewResultButton.setDisable(true);
         cvPane.getChildren().addAll(codeCheckButton,viewResultButton);
         
         checkText=TextAreaBuilder.create().prefWidth(500).wrapText(true).build();
@@ -483,6 +484,13 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         
         removeButton.setOnAction(e->{
             controller.handleRemoveRequest(step);
+        });
+        codeCheckButton.setOnAction(e->{
+            viewResultButton.setDisable(false);
+            controller.handleCodeCheck();
+        });
+        viewResultButton.setOnAction(e->{
+            controller.handleViewResult();
         });
     }
     

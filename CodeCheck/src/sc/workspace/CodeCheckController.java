@@ -346,15 +346,9 @@ public class CodeCheckController {
             for(int k=ze.getName().length()-1;k>=0;k--){
                 if(ze.getName().charAt(k)=='/'){
                     s+=ze.getName().substring(k+1)+"\n"; 
-                    //Path from=Paths.get(f.getPath(),ze.getName());
-                    //Path to=Paths.get(p,from.getFileName().toString());
-                    //ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
-                    
                     break;
                 }
             }
-            
-            
             byte[] buffer=new byte[1024];
             File file=new File(ze.getName());
             ZipInputStream zis=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
@@ -362,8 +356,8 @@ public class CodeCheckController {
             FileOutputStream fos=new FileOutputStream(newFile);
             int len;
             while((len=zis.read(buffer))>0){
-            fos.write(buffer,0,len);
-        }
+                fos.write(buffer,0,len);
+            }
             
             long size = ze.getSize();
             if (size > 0) {
@@ -439,9 +433,16 @@ public class CodeCheckController {
         canButton.setOnAction(e->{
             stage.close();
         });
-        
-
         stage.sizeToScene();
         stage.show();
+    }
+    
+    public void handleCodeCheck(){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        workspace.checkText.setText("Student Plaglarism Check Results can be found at\nhttp://www.exampleresults.edu");
+        workspace.checkBar.setProgress(1);
+    }
+    public void handleViewResult(){
+        
     }
 }
