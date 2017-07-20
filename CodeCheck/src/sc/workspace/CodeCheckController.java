@@ -7,11 +7,13 @@ package sc.workspace;
 
 import djf.ui.AppMessageDialogSingleton;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import static java.lang.Thread.sleep;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -113,7 +115,6 @@ public class CodeCheckController {
          workspace.extractText.clear();
          CodeCheckData data = (CodeCheckData)app.getDataComponent();
          workspace.workView.setItems(data.getSt4());
-         System.out.println(data.getSt4().get(0).getFileName());
          workspace.toStep4();
         }else{
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
@@ -284,21 +285,49 @@ public class CodeCheckController {
     
     public void handleExtractCode(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-        System.out.println(workspace.cb1.isSelected());
-        String s1=null;
-        String s2=null;
-        String s3=null;
-        String s4=null;
-        String s5=null;
+        CodeCheckData data = (CodeCheckData)app.getDataComponent();
+        String mse="Successful code extraction:\n";
+        String msee="\nCode Extraction Errors\nnone";
+        for(int i=0;i<data.getStuFile().size();i++){
+            mse+=data.getSt4().get(i).getFileName()+"\n";
         if(workspace.cb1.isSelected()==true)
-            s1=workspace.cb1.getText();
+            mse+=readZip(data.getStuFile().get(i),workspace.cb1.getText());
         if(workspace.cb2.isSelected()==true)
-            s1=workspace.cb2.getText();
-        if(workspace.cb3.isSelected()==true)
-            s1=workspace.cb3.getText();
+            mse+=readZip(data.getStuFile().get(i),workspace.cb2.getText());
+        if(workspace.cb3.isSelected()==true){
+            mse+=readZip(data.getStuFile().get(i),".c");
+            mse+=readZip(data.getStuFile().get(i),".h");
+            mse+=readZip(data.getStuFile().get(i),".cpp");
+        }
         if(workspace.cb4.isSelected()==true)
-            s1=workspace.cb4.getText();
-        if(workspace.cb5.isSelected()==true)
-            s5=workspace.cb5L.getText();
+            mse+=readZip(data.getStuFile().get(i),workspace.cb4.getText());
+        if(workspace.cb5.isSelected()==true&&!(workspace.cb5L.getText().isEmpty()))
+            mse+=readZip(data.getStuFile().get(i),workspace.cb5L.getText());
+        }
+        workspace.extractText.setText(mse+msee);
+    }
+    public String readZip(File f,String t){
+        String s="";
+    try {
+      ZipFile zf = new ZipFile(f.getPath());
+      Enumeration entries = zf.entries();
+      while (entries.hasMoreElements()) {
+        ZipEntry ze = (ZipEntry) entries.nextElement();
+        
+        if (ze.getName().toLowerCase().endsWith(t)) {
+          s+=ze.getName()+"\n";
+          long size = ze.getSize();
+          if (size > 0) {
+            BufferedReader br = new BufferedReader(
+                new InputStreamReader(zf.getInputStream(ze)));
+            br.close();
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return s;
+
     }
 }

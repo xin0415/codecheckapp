@@ -325,7 +325,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         unzipLabel=new Label("Unzip Progress");
         unzipBar=new ProgressBar();
         unzipBar.setPrefWidth(200);
-        unzipBar.setProgress(0.45);
+        unzipBar.setProgress(0);
         unzipPane.getChildren().addAll(unzipLabel, unzipBar);
         unzipButton=new Button("Unzip");
         unzipButton.setOnAction(e->{
@@ -371,7 +371,7 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         CodeLabel=new Label("Code Progress");
         CodeBar=new ProgressBar();
         CodeBar.setPrefWidth(200);
-        CodeBar.setProgress(0.45);
+        CodeBar.setProgress(0);
         CodePane.getChildren().addAll(CodeLabel,CodeBar);
         ExtractCodeButton=new Button("Extract Code");
         
