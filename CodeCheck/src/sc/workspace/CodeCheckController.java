@@ -303,8 +303,11 @@ public class CodeCheckController {
             mse+=readZip(data.getStuFile().get(i),workspace.cb4.getText());
         if(workspace.cb5.isSelected()==true&&!(workspace.cb5L.getText().isEmpty()))
             mse+=readZip(data.getStuFile().get(i),workspace.cb5L.getText());
+        workspace.CodeBar.setProgress((double)i/data.getStuFile().size());
+        System.out.println((double)i/data.getStuFile().size());
         }
         workspace.extractText.setText(mse+msee);
+        workspace.CodeBar.setProgress(1);
     }
     public String readZip(File f,String t){
         String s="";
