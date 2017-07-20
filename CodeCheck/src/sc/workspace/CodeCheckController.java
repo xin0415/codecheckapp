@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import static java.lang.Thread.sleep;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import properties_manager.PropertiesManager;
@@ -274,25 +275,26 @@ public class CodeCheckController {
         for(int i=0;i<data.getStuFile().size();i++){
             mse+=data.getSt4().get(i).getFileName()+"\n";
         if(workspace.cb1.isSelected()==true)
-            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb1.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb1.getText(),data.getSt4().get(i).getPath());
         if(workspace.cb2.isSelected()==true)
-            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb2.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb2.getText(),data.getSt4().get(i).getPath());
         if(workspace.cb3.isSelected()==true){
-            mse+=readZip(data.getStuFile().get(i).getFile(),".c");
-            mse+=readZip(data.getStuFile().get(i).getFile(),".h");
-            mse+=readZip(data.getStuFile().get(i).getFile(),".cpp");
+            mse+=readZip(data.getStuFile().get(i).getFile(),".c",data.getSt4().get(i).getPath());
+            mse+=readZip(data.getStuFile().get(i).getFile(),".h",data.getSt4().get(i).getPath());
+            mse+=readZip(data.getStuFile().get(i).getFile(),".cpp",data.getSt4().get(i).getPath());
         }
         if(workspace.cb4.isSelected()==true)
-            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb4.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb4.getText(),data.getSt4().get(i).getPath());
         if(workspace.cb5.isSelected()==true&&!(workspace.cb5L.getText().isEmpty()))
-            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb5L.getText());
+            mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb5L.getText(),data.getSt4().get(i).getPath());
         workspace.CodeBar.setProgress((double)i/data.getStuFile().size());
         System.out.println((double)i/data.getStuFile().size());
         }
         workspace.workdText.setText(mse+msee);
         workspace.CodeBar.setProgress(1);
     }
-    public String readZip(File f,String t){
+    public String readZip(File f,String t,String p){
+        System.out.println(p);
         String s="";
     try {
       ZipFile zf = new ZipFile(f.getPath());
@@ -301,7 +303,6 @@ public class CodeCheckController {
         ZipEntry ze = (ZipEntry) entries.nextElement();
         
         if (ze.getName().toLowerCase().endsWith(t)) {
-            
             for(int k=ze.getName().length()-1;k>=0;k--){
                 if(ze.getName().charAt(k)=='/'){
                     s+=ze.getName().substring(k+1)+"\n"; 
