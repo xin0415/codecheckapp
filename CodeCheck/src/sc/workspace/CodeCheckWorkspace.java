@@ -492,6 +492,10 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         viewResultButton.setOnAction(e->{
             controller.handleViewResult();
         });
+        viewButton.setOnAction(e->{
+            controller.handleView(step);
+        });
+        
     }
     
     

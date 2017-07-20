@@ -38,9 +38,12 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sc.data.CodeHW;
@@ -408,7 +411,6 @@ public class CodeCheckController {
         Stage stage=new Stage();
         stage.setTitle("Remove");
         
-        boolean f=false;
         okButton=new Button("OK");
         canButton=new Button("Cancel");
         FlowPane flow=new FlowPane();
@@ -443,6 +445,75 @@ public class CodeCheckController {
         workspace.checkBar.setProgress(1);
     }
     public void handleViewResult(){
+        Stage stage=new Stage();
+        stage.setTitle("View Result");
+        Hyperlink link=new Hyperlink("http://www.exampleresults.edu");
+        VBox box=new VBox();
         
+        Group root=new Group();
+        Scene scene=new Scene(root, 400, 80);
+        stage.setScene(scene);
+
+        GridPane grid=new GridPane();
+        grid.setPadding(new Insets(10,10,10,10));
+        grid.setVgap(5);
+        grid.setHgap(5);
+        scene.setRoot(grid);
+
+        Label view=new Label(" Click the link below to review result:");
+        box.getChildren().addAll(view,link);
+        grid.getChildren().addAll(box);
+        stage.sizeToScene();
+        stage.show();
+    }
+    public void handleView(int s){
+        Stage stage=new Stage();
+        stage.setTitle("View Information");
+        VBox box=new VBox();
+        
+        Group root=new Group();
+        Scene scene=new Scene(root, 400, 200);
+        stage.setScene(scene);
+        
+        GridPane grid=new GridPane();
+        grid.setPadding(new Insets(10,10,10,10));
+        grid.setVgap(5);
+        grid.setHgap(5);
+        scene.setRoot(grid);
+        if(s==1){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            for(int i=0;i<data.getZipFile().size();i++){
+                Label view=new Label("file name: "+data.getZipFile().get(i).getFileName()+"\tpath: "+data.getZipFile().get(i).getFile().getPath());
+                box.getChildren().addAll(view);
+            }
+        }else if(s==2){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            for(int i=0;i<data.getUnzipFile().size();i++){
+                Label view=new Label("file name: "+data.getUnzipFile().get(i).getFileName()+"\tpath: "+data.getUnzipFile().get(i).getFile().getPath());
+                box.getChildren().addAll(view);
+            }
+        }else if(s==3){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            for(int i=0;i<data.getStuFile().size();i++){
+                Label view=new Label("file name: "+data.getStuFile().get(i).getFileName()+"\tpath: "+data.getStuFile().get(i).getFile().getPath());
+                box.getChildren().addAll(view);
+            }
+        }else if(s==4){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            for(int i=0;i<data.getSt4().size();i++){
+                Label view=new Label("file name: "+data.getSt4().get(i).getFileName()+"\tpath: "+data.getSt4().get(i).getPath());
+                box.getChildren().addAll(view);
+            }
+        }else if(s==5){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            for(int i=0;i<data.getSt5().size();i++){
+                Label view=new Label("file name: "+data.getSt5().get(i).getFileName()+"\tpath: "+data.getSt5().get(i).getPath());
+                box.getChildren().addAll(view);
+            }
+        }
+        
+        grid.getChildren().addAll(box);
+        stage.sizeToScene();
+        stage.show();
     }
 }
