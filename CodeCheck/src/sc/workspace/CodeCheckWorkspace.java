@@ -166,8 +166,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     // handle step 5
     Label step5;
     Label step5Text;
-    TableView sworkView;
-    TableColumn sworkColumn;
+    TableView<Homework> sworkView;
+    TableColumn<Homework,StringProperty> sworkColumn;
     ScrollPane sworkScroll;
     FlowPane checkPane;
     FlowPane cvPane;
@@ -420,6 +420,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         sworkView=new TableView();
         sworkColumn=new TableColumn("Student Work");
         sworkColumn.prefWidthProperty().bind(blackboardView.widthProperty());
+        sworkColumn.setCellValueFactory(
+                new PropertyValueFactory<Homework,StringProperty>("fileName")
+        );
         sworkView.getColumns().add(sworkColumn);
         sworkScroll= new ScrollPane();
         sworkScroll.setContent(sworkView);
@@ -462,7 +465,28 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         // NOW LET'S SETUP THE EVENT HANDLING
         controller = new CodeCheckController(app);
         blackboardView.getSelectionModel().selectedItemProperty().addListener(e->{
-            controller.handleSelectFile();
+            controller.handleSelectFile(step);
+        });
+        
+        studentSubmitView.getSelectionModel().selectedItemProperty().addListener(e->{
+            controller.handleSelectFile(step);
+        });
+        studentFileView.getSelectionModel().selectedItemProperty().addListener(e->{
+            controller.handleSelectFile(step);
+        });
+        workView.getSelectionModel().selectedItemProperty().addListener(e->{
+            controller.handleSelectFile(step);
+        });
+        sworkView.getSelectionModel().selectedItemProperty().addListener(e->{
+            controller.handleSelectFile(step);
+        });
+        
+        
+        
+        
+        
+        removeButton.setOnAction(e->{
+            controller.handleRemoveRequest(step);
         });
     }
     

@@ -18,6 +18,11 @@ import static java.lang.Thread.sleep;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import properties_manager.PropertiesManager;
@@ -29,7 +34,15 @@ import sc.data.CodeCheckData;
 import sc.workspace.CodeCheckWorkspace;
 import java.util.zip.*;
 import java.util.*;
+import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import sc.data.CodeHW;
 import sc.data.Homework;
 
@@ -44,9 +57,12 @@ import sc.data.Homework;
 public class CodeCheckController {
     // THE APP PROVIDES ACCESS TO OTHER COMPONENTS AS NEEDED
     CodeCheckApp app;
-    File selectedFile;
+    CodeHW selectedFile;
     int selectedIndex;
     String step1msg;
+    Homework selected;
+    Button okButton;
+    Button canButton;
 
     /**
      * Constructor, note that the app must already be constructed.
@@ -120,8 +136,9 @@ public class CodeCheckController {
          workspace.toStep4();
         }else{
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-         workspace.checkText.clear();
+         CodeCheckData data = (CodeCheckData)app.getDataComponent();
          workspace.checkText.setDisable(false);
+         workspace.sworkView.setItems(data.getSt5());
          workspace.toStep5();
         }
         
@@ -148,8 +165,8 @@ public class CodeCheckController {
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         double i=0;
-        double filesize=selectedFile.length();
-        ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(selectedFile.getCanonicalFile())));
+        double filesize=selectedFile.getFile().length();
+        ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(selectedFile.getFile().getCanonicalFile())));
         ZipEntry zip=null;
         String msg="";
         String msgtxt="";
@@ -157,7 +174,7 @@ public class CodeCheckController {
         while((zip=zipInputStream.getNextEntry())!=null){
             try{
                 byte[] buffer=new byte[8000];
-                String unzippedFile=selectedFile.getParent()+"/"+zip.getName();
+                String unzippedFile=selectedFile.getFile().getParent()+"/"+zip.getName();
                 FileOutputStream fileOutputStream=new FileOutputStream(unzippedFile);
                 int size;
                 while ((size=zipInputStream.read(buffer))!=-1){
@@ -189,10 +206,29 @@ public class CodeCheckController {
             workspace.extractText.setDisable(false);
             workspace.extractionBar.setProgress(1);
     }
-    public void handleSelectFile(){
-        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
-        selectedFile = workspace.blackboardView.getSelectionModel().getSelectedItem().getFile();
-        selectedIndex = workspace.blackboardView.getSelectionModel().getSelectedIndex();
+    public void handleSelectFile(int s){
+        if(s==1){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            selectedFile = workspace.blackboardView.getSelectionModel().getSelectedItem();
+            selectedIndex = workspace.blackboardView.getSelectionModel().getSelectedIndex();
+        }else if(s==2){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            selectedFile = workspace.studentSubmitView.getSelectionModel().getSelectedItem();
+            selectedIndex = workspace.studentSubmitView.getSelectionModel().getSelectedIndex();
+        }else if(s==3){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            selectedFile = workspace.studentFileView.getSelectionModel().getSelectedItem();
+            selectedIndex = workspace.studentFileView.getSelectionModel().getSelectedIndex();
+        }
+        else if(s==4){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            selected = workspace.workView.getSelectionModel().getSelectedItem();
+            selectedIndex = workspace.workView.getSelectionModel().getSelectedIndex();
+        }else if(s==5){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            selected = workspace.sworkView.getSelectionModel().getSelectedItem();
+            selectedIndex = workspace.sworkView.getSelectionModel().getSelectedIndex();
+        }
     }
     
     public void sleep(int timeToSleep) {
@@ -226,7 +262,7 @@ public class CodeCheckController {
         s+="\nbecomes "+newname+".zip\n";
         workspace.renameBar.setProgress((double)j/data.getUnzipFile().size());
         System.out.println((double)j/data.getUnzipFile().size());
-        File file=new File(selectedFile.getParent()+"/"+newname+".zip");
+        File file=new File(selectedFile.getFile().getParent()+"/"+newname+".zip");
         data.getUnzipFile().get(j).getFile().renameTo(file);
         CodeHW code=new CodeHW(file.getName(),file);
         data.addStuFile(code);
@@ -287,6 +323,9 @@ public class CodeCheckController {
             mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb4.getText(),data.getSt4().get(i).getPath());
         if(workspace.cb5.isSelected()==true&&!(workspace.cb5L.getText().isEmpty()))
             mse+=readZip(data.getStuFile().get(i).getFile(),workspace.cb5L.getText(),data.getSt4().get(i).getPath());
+        Homework hw=new Homework(data.getSt4().get(i).getFileName(),data.getSt4().get(i).getPath());
+        data.addSt5(hw);
+        
         workspace.CodeBar.setProgress((double)i/data.getStuFile().size());
         System.out.println((double)i/data.getStuFile().size());
         }
@@ -294,7 +333,6 @@ public class CodeCheckController {
         workspace.CodeBar.setProgress(1);
     }
     public String readZip(File f,String t,String p){
-        System.out.println(p);
         String s="";
     try {
       ZipFile zf = new ZipFile(f.getPath());
@@ -306,9 +344,14 @@ public class CodeCheckController {
             for(int k=ze.getName().length()-1;k>=0;k--){
                 if(ze.getName().charAt(k)=='/'){
                     s+=ze.getName().substring(k+1)+"\n"; 
+                    //Path from=Paths.get(f.getPath(),ze.getName());
+                    //Path to=Paths.get(p,from.getFileName().toString());
+                    
                     break;
                 }
             }
+            
+            
             long size = ze.getSize();
             if (size > 0) {
             BufferedReader br = new BufferedReader(
@@ -322,5 +365,71 @@ public class CodeCheckController {
     }
     return s;
 
+    }
+    
+    
+    public void handleRemove(int i){
+        if (i==1){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            CodeHW selected = (CodeHW)workspace.blackboardView.getSelectionModel().getSelectedItem();
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            data.removeZipFile(selected);
+        }else if(i==2){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            CodeHW selected = (CodeHW)workspace.studentSubmitView.getSelectionModel().getSelectedItem();
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            data.removeUnzip(selected);
+        }else if (i==3){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            CodeHW selected = (CodeHW)workspace.studentFileView.getSelectionModel().getSelectedItem();
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            data.removeStuFile(selected);
+        }
+        else if (i==4){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            Homework selected = (Homework)workspace.workView.getSelectionModel().getSelectedItem();
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            data.removeSt4(selected);
+        }else if (i==5){
+            CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            Homework selected = (Homework)workspace.sworkView.getSelectionModel().getSelectedItem();
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            data.removeSt5(selected);
+        }
+    }
+    public void handleRemoveRequest(int i){
+        Stage stage=new Stage();
+        stage.setTitle("Remove");
+        
+        boolean f=false;
+        okButton=new Button("OK");
+        canButton=new Button("Cancel");
+        FlowPane flow=new FlowPane();
+        
+        Group root=new Group();
+        Scene scene=new Scene(root, 400, 50);
+        stage.setScene(scene);
+
+        GridPane grid=new GridPane();
+        grid.setPadding(new Insets(10,10,10,10));
+        grid.setVgap(5);
+        grid.setHgap(5);
+        scene.setRoot(grid);
+
+        Label remove=new Label(" Do you want to remove this item? ");
+        flow.getChildren().addAll(remove, okButton, canButton);
+        //GridPane.setColumnSpan(name,2);
+        grid.getChildren().addAll(flow);
+        okButton.setOnAction(e->{
+            handleRemove(i);
+            stage.close();
+        });
+        canButton.setOnAction(e->{
+            stage.close();
+        });
+        
+
+        stage.sizeToScene();
+        stage.show();
     }
 }

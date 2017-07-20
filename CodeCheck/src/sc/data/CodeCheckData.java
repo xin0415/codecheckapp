@@ -27,6 +27,7 @@ public class CodeCheckData implements AppDataComponent {
     public ObservableList <CodeHW> unzipFile;
     public ObservableList<CodeHW> stuFile;
     public ObservableList<Homework> step4File;
+    public ObservableList<Homework> step5File;
 
     // NOTE THAT THIS DATA STRUCTURE WILL DIRECTLY STORE THE
     // DATA IN THE ROWS OF THE TABLE VIEW
@@ -43,6 +44,7 @@ public class CodeCheckData implements AppDataComponent {
         unzipFile=FXCollections.observableArrayList();
         stuFile=FXCollections.observableArrayList();
         step4File=FXCollections.observableArrayList();
+        step5File=FXCollections.observableArrayList();
         
         // MAKE THE SLIDES MODEL
     }
@@ -53,6 +55,10 @@ public class CodeCheckData implements AppDataComponent {
     public ObservableList <CodeHW> getZipFile(){
         return zipFile;
     }
+    public void removeZipFile(CodeHW e){
+        zipFile.remove(e);
+    }
+    
     public void addUnzipFile(CodeHW e){
         unzipFile.add(e);
     }
@@ -60,14 +66,39 @@ public class CodeCheckData implements AppDataComponent {
     public ObservableList <CodeHW> getUnzipFile(){
         return unzipFile;
     }
+    
+    public void removeUnzip(CodeHW e){
+        unzipFile.remove(e);
+    }
+    
+    
     public void addStuFile(CodeHW e){
         stuFile.add(e);
     }
     public ObservableList <CodeHW> getStuFile(){
         return stuFile;
     }
+    public void removeStuFile(CodeHW e){
+        stuFile.remove(e);
+    }
+    
+    
     public ObservableList <Homework> getSt4(){
         return step4File;
+    }
+    public void removeSt4(Homework e){
+        step4File.remove(e);
+    }
+    
+    public void addSt5(Homework h){
+        step5File.add(h);
+    }
+    public ObservableList <Homework> getSt5(){
+        return step5File;
+    }
+    
+    public void removeSt5(Homework e){
+        step5File.remove(e);
     }
 
     @Override
