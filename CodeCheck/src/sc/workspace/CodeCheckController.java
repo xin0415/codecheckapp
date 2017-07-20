@@ -340,17 +340,30 @@ public class CodeCheckController {
       while (entries.hasMoreElements()) {
         ZipEntry ze = (ZipEntry) entries.nextElement();
         
+        
+        
         if (ze.getName().toLowerCase().endsWith(t)) {
             for(int k=ze.getName().length()-1;k>=0;k--){
                 if(ze.getName().charAt(k)=='/'){
                     s+=ze.getName().substring(k+1)+"\n"; 
                     //Path from=Paths.get(f.getPath(),ze.getName());
                     //Path to=Paths.get(p,from.getFileName().toString());
+                    //ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
                     
                     break;
                 }
             }
             
+            
+            byte[] buffer=new byte[1024];
+            File file=new File(ze.getName());
+            ZipInputStream zis=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
+            File newFile=new File(p+File.separator+file.getName());
+            FileOutputStream fos=new FileOutputStream(newFile);
+            int len;
+            while((len=zis.read(buffer))>0){
+            fos.write(buffer,0,len);
+        }
             
             long size = ze.getSize();
             if (size > 0) {
@@ -418,7 +431,6 @@ public class CodeCheckController {
 
         Label remove=new Label(" Do you want to remove this item? ");
         flow.getChildren().addAll(remove, okButton, canButton);
-        //GridPane.setColumnSpan(name,2);
         grid.getChildren().addAll(flow);
         okButton.setOnAction(e->{
             handleRemove(i);
