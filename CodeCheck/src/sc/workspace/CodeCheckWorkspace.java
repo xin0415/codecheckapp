@@ -371,6 +371,10 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         CodePane.getChildren().addAll(CodeLabel,CodeBar);
         ExtractCodeButton=new Button("Extract Code");
         
+        ExtractCodeButton.setOnAction(e->{
+            controller.handleExtractCode();
+        });
+        
         // handle step 5
         step5=new Label("Step 5: Code Check");
         step5Text=new Label("Select students and click Code Check");

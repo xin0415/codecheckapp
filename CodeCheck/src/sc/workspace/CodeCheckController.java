@@ -276,4 +276,10 @@ public class CodeCheckController {
             zipInputStream.close();
     }
     
+    public void handleExtractCode(){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        System.out.println(workspace.cb1.isSelected());
+        if(workspace.cb5.isSelected()==true)
+            System.out.println(workspace.cb5L.getText());
+    }
 }
