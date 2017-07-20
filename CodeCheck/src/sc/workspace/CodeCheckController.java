@@ -247,8 +247,12 @@ public class CodeCheckController {
             ms+=data.getStuFile().get(i).getName()+"\n";
         else
             ems+=data.getStuFile().get(i).getName()+"\n";
+        
+        workspace.unzipBar.setProgress((double)i/data.getStuFile().size());
+        System.out.println((double)i/data.getStuFile().size());
         }
         workspace.extractText.setText(ms+ems);
+        workspace.unzipBar.setProgress(1);
     }
     public void createUnzip(File f,String p) throws IOException{
         ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
