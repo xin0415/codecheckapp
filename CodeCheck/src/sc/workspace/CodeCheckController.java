@@ -25,6 +25,8 @@ import static sc.CodeCheckProp.INVALID_IMAGE_PATH_TITLE;
 import sc.data.CodeCheckData;
 import sc.workspace.CodeCheckWorkspace;
 import java.util.zip.*;
+import java.util.*;
+import javafx.stage.FileChooser;
 
 /**
  * This class provides responses to all workspace interactions, meaning
@@ -136,7 +138,6 @@ public class CodeCheckController {
     public void handleExtract() throws IOException{
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
-        Thread th =Thread.currentThread();
         double i=0;
         double filesize=selectedFile.length();
         ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(selectedFile.getCanonicalFile())));
@@ -163,7 +164,7 @@ public class CodeCheckController {
                 
                 i+=zip.getSize();
                 workspace.extractionBar.setProgress(i/filesize);
-                
+                System.out.println(i/filesize);
                 File file=new File(unzippedFile);
                 if (file.getName().toLowerCase().endsWith(".zip")) {
                     data.addUnzipFile(file);
@@ -212,7 +213,7 @@ public class CodeCheckController {
                 break;
         }
         String newname=oldname.substring(k, i);
-        s+="\n"+newname+"\n";
+        s+="\nbecomes "+newname+".zip\n";
         workspace.renameBar.setProgress((double)j/data.getUnzipFile().size());
         System.out.println((double)j/data.getUnzipFile().size());
         File file=new File(selectedFile.getParent()+"/"+newname+".zip");
@@ -223,4 +224,52 @@ public class CodeCheckController {
        workspace.extractText.setText(s);
        workspace.renameBar.setProgress(1);
     }
+    public void handleUnzip() throws IOException{
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        CodeCheckData data = (CodeCheckData)app.getDataComponent();
+        String ms="Successfully unzipped files:\n";
+        String ems="\nUnzip Errors:\n";
+        
+        for(int i=0;i<data.getStuFile().size();i++)
+        {
+        String name=data.getStuFile().get(i).getName();
+        int k=0;
+        for(int j=0;j<name.length();j++){
+            if(name.charAt(j)=='.')
+                break;
+            else
+                k++;
+        }
+        String dirname=name.substring(0, k);
+        boolean success=(new File(data.getStuFile().get(i).getParent()+"/"+dirname)).mkdirs();
+        createUnzip(data.getStuFile().get(i),data.getStuFile().get(i).getParent()+"/"+dirname);
+        if(success==false)
+            ms+=data.getStuFile().get(i).getName()+"\n";
+        else
+            ems+=data.getStuFile().get(i).getName()+"\n";
+        }
+        workspace.extractText.setText(ms+ems);
+    }
+    public void createUnzip(File f,String p) throws IOException{
+        ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(f.getCanonicalFile())));
+        ZipEntry zip=null;
+        
+        while((zip=zipInputStream.getNextEntry())!=null){
+            try{
+                byte[] buffer=new byte[8000];
+                String unzippedFile=p+"/"+zip.getName();
+                FileOutputStream fileOutputStream=new FileOutputStream(unzippedFile);
+                int size;
+                while ((size=zipInputStream.read(buffer))!=-1){
+                    fileOutputStream.write(buffer,0,size);
+                }
+                
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                
+            }catch(Exception ex){
+            }}
+            zipInputStream.close();
+    }
+    
 }

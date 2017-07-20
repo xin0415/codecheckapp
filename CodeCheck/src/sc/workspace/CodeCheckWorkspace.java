@@ -327,6 +327,13 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         unzipBar.setProgress(0.45);
         unzipPane.getChildren().addAll(unzipLabel, unzipBar);
         unzipButton=new Button("Unzip");
+        unzipButton.setOnAction(e->{
+            try {
+                controller.handleUnzip();
+            } catch (IOException ex) {
+                Logger.getLogger(CodeCheckWorkspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
        
         /////step 4
         step4=new Label("Step 4: Extract SourceCode");
