@@ -27,6 +27,7 @@ import sc.workspace.CodeCheckWorkspace;
 import java.util.zip.*;
 import java.util.*;
 import javafx.stage.FileChooser;
+import sc.data.Homework;
 
 /**
  * This class provides responses to all workspace interactions, meaning
@@ -110,6 +111,9 @@ public class CodeCheckController {
         }else if(s==4){
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
          workspace.extractText.clear();
+         CodeCheckData data = (CodeCheckData)app.getDataComponent();
+         workspace.workView.setItems(data.getSt4());
+         System.out.println(data.getSt4().get(0).getFileName());
          workspace.toStep4();
         }else{
          CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
@@ -243,6 +247,8 @@ public class CodeCheckController {
         String dirname=name.substring(0, k);
         boolean success=(new File(data.getStuFile().get(i).getParent()+"/"+dirname)).mkdirs();
         createUnzip(data.getStuFile().get(i),data.getStuFile().get(i).getParent()+"/"+dirname);
+        Homework h=new Homework(dirname,(data.getStuFile().get(i).getParent()+"/"+dirname));
+        data.addSt4(h);
         if(success==false)
             ms+=data.getStuFile().get(i).getName()+"\n";
         else
@@ -279,7 +285,20 @@ public class CodeCheckController {
     public void handleExtractCode(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         System.out.println(workspace.cb1.isSelected());
+        String s1=null;
+        String s2=null;
+        String s3=null;
+        String s4=null;
+        String s5=null;
+        if(workspace.cb1.isSelected()==true)
+            s1=workspace.cb1.getText();
+        if(workspace.cb2.isSelected()==true)
+            s1=workspace.cb2.getText();
+        if(workspace.cb3.isSelected()==true)
+            s1=workspace.cb3.getText();
+        if(workspace.cb4.isSelected()==true)
+            s1=workspace.cb4.getText();
         if(workspace.cb5.isSelected()==true)
-            System.out.println(workspace.cb5L.getText());
+            s5=workspace.cb5L.getText();
     }
 }

@@ -60,6 +60,7 @@ import static sc.CodeCheckProp.PATH_PROMPT_TEXT;
 import static sc.CodeCheckProp.NEXT_BUTTON;
 import static sc.CodeCheckProp.UPDATE_BUTTON_TEXT;
 import sc.data.CodeCheckData;
+import sc.data.Homework;
 import static sc.style.CodeCheckStyle.CLASS_EDIT_BUTTON;
 import static sc.style.CodeCheckStyle.CLASS_EDIT_SLIDER;
 import static sc.style.CodeCheckStyle.CLASS_EDIT_TEXT_FIELD;
@@ -138,8 +139,8 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
     // handle step4
     Label step4;
     Label step4Text;
-    TableView workView;
-    TableColumn workColumn;
+    TableView<Homework> workView;
+    TableColumn<Homework,StringProperty> workColumn;
     ScrollPane workScroll;
     GridPane cbPane;
     Label type;
@@ -342,6 +343,9 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         workColumn=new TableColumn("Student Work Directories");
         workColumn.prefWidthProperty().bind(blackboardView.widthProperty());
         workView.getColumns().add(workColumn);
+        workColumn.setCellValueFactory(
+                new PropertyValueFactory<Homework,StringProperty>("fileName")
+        );
         workScroll= new ScrollPane();
         workScroll.setContent(workView);
         workScroll.setFitToWidth(true);

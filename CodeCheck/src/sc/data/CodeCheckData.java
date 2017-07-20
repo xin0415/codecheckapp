@@ -26,6 +26,7 @@ public class CodeCheckData implements AppDataComponent {
     public ObservableList <File> zipFile;
     public ObservableList <File> unzipFile;
     public ObservableList<File> stuFile;
+    public ObservableList<Homework> step4File;
 
     // NOTE THAT THIS DATA STRUCTURE WILL DIRECTLY STORE THE
     // DATA IN THE ROWS OF THE TABLE VIEW
@@ -41,6 +42,7 @@ public class CodeCheckData implements AppDataComponent {
         zipFile= FXCollections.observableArrayList();
         unzipFile=FXCollections.observableArrayList();
         stuFile=FXCollections.observableArrayList();
+        step4File=FXCollections.observableArrayList();
         
         // MAKE THE SLIDES MODEL
     }
@@ -64,10 +66,17 @@ public class CodeCheckData implements AppDataComponent {
     public ObservableList <File> getStuFile(){
         return stuFile;
     }
+    public ObservableList <Homework> getSt4(){
+        return step4File;
+    }
 
     @Override
     public void resetData() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void addSt4(Homework h) {
+        step4File.add(h);
     }
     
 }
