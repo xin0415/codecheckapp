@@ -36,6 +36,8 @@ import sc.data.CodeCheckData;
 import sc.workspace.CodeCheckWorkspace;
 import java.util.zip.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -172,49 +174,65 @@ public class CodeCheckController {
     }
     
     public void handleExtract() throws IOException{
-        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        new Thread(new Runnable() {
+           @Override public void run(){
+               CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         double i=0;
         double filesize=selectedFile.getFile().length();
-        ZipInputStream zipInputStream=new ZipInputStream(new BufferedInputStream(new FileInputStream(selectedFile.getFile().getCanonicalFile())));
+        ZipInputStream zipInputStream = null;
+               try {
+                   zipInputStream = new ZipInputStream(new BufferedInputStream(new FileInputStream(selectedFile.getFile().getCanonicalFile())));
+               } catch (IOException ex) {
+                   Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+               }
         ZipEntry zip=null;
         String msg="";
         String msgtxt="";
         
-        while((zip=zipInputStream.getNextEntry())!=null){
-            try{
-                byte[] buffer=new byte[8000];
-                String unzippedFile=selectedFile.getFile().getParent()+"/"+zip.getName();
-                FileOutputStream fileOutputStream=new FileOutputStream(unzippedFile);
-                int size;
-                while ((size=zipInputStream.read(buffer))!=-1){
-                    fileOutputStream.write(buffer,0,size);
-                }
-                
-                fileOutputStream.flush();
-                fileOutputStream.close();
-                if(zip.getName().endsWith("zip"))
-                    msg+=zip.getName()+"\n";
-                else
-                    msgtxt+=zip.getName()+"\n";
-                
-                i+=zip.getSize();
-                workspace.extractionBar.setProgress(i/filesize);
-                System.out.println(i/filesize);
-                File file=new File(unzippedFile);
-                CodeHW code =new CodeHW(file.getName(),file);
-                if (file.getName().toLowerCase().endsWith(".zip")) {
-                    data.addUnzipFile(code);
-                }
-                
-            }catch(Exception ex){
-            }}
-            zipInputStream.close();
+               try {
+                   while((zip=zipInputStream.getNextEntry())!=null){
+                       try{
+                           byte[] buffer=new byte[8000];
+                           String unzippedFile=selectedFile.getFile().getParent()+"/"+zip.getName();
+                           FileOutputStream fileOutputStream=new FileOutputStream(unzippedFile);
+                           int size;
+                           while ((size=zipInputStream.read(buffer))!=-1){
+                               fileOutputStream.write(buffer,0,size);
+                           }
+                           
+                           fileOutputStream.flush();
+                           fileOutputStream.close();
+                           if(zip.getName().endsWith("zip"))
+                               msg+=zip.getName()+"\n";
+                           else
+                               msgtxt+=zip.getName()+"\n";
+                           
+                           i+=zip.getSize();
+                           workspace.extractionBar.setProgress(i/filesize);
+                           sleep(5);
+                           //System.out.println(i/filesize);
+                           File file=new File(unzippedFile);
+                           CodeHW code =new CodeHW(file.getName(),file);
+                           if (file.getName().toLowerCase().endsWith(".zip")) {
+                               data.addUnzipFile(code);
+                           }
+                           
+                       }catch(Exception ex){
+                       }} } catch (IOException ex) {
+                   Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+               }
+               try {
+                   zipInputStream.close();
+               } catch (IOException ex) {
+                   Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+               }
             step1msg="Successfully extracted files:\n"+msg+"\nSubmission Errors:\n"+msgtxt;
             
             workspace.extractText.setText(step1msg);
             workspace.extractText.setDisable(false);
             workspace.extractionBar.setProgress(1);
+        }}).start();
     }
     public void handleSelectFile(int s){
         if(s==1){
@@ -241,15 +259,10 @@ public class CodeCheckController {
         }
     }
     
-    public void sleep(int timeToSleep) {
-	try {
-	    Thread.sleep(timeToSleep);
-	} catch (InterruptedException ie) {
-	    ie.printStackTrace();
-	}
-    }
     
     public void handleRename(){
+        new Thread(new Runnable() {
+           @Override public void run(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         String s="Successfully renamed submissions:\n";
@@ -271,7 +284,12 @@ public class CodeCheckController {
         String newname=oldname.substring(k, i);
         s+="\nbecomes "+newname+".zip\n";
         workspace.renameBar.setProgress((double)j/data.getUnzipFile().size());
-        System.out.println((double)j/data.getUnzipFile().size());
+            try {
+                sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        //System.out.println((double)j/data.getUnzipFile().size());
         File file=new File(selectedFile.getFile().getParent()+"/"+newname+".zip");
         data.getUnzipFile().get(j).getFile().renameTo(file);
         CodeHW code=new CodeHW(file.getName(),file);
@@ -280,8 +298,11 @@ public class CodeCheckController {
        s+="\nRename Errors:\nnone";
        workspace.studentSubmitText.setText(s);
        workspace.renameBar.setProgress(1);
+       }}).start();
     }
     public void handleUnzip() throws IOException{
+        new Thread(new Runnable() {
+           @Override public void run(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         String ms="Successfully unzipped files:\n";
@@ -307,13 +328,21 @@ public class CodeCheckController {
             ems+=data.getStuFile().get(i).getFile().getName()+"\n";
         
         workspace.unzipBar.setProgress((double)i/data.getStuFile().size());
-        System.out.println((double)i/data.getStuFile().size());
+            try {
+                sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        //System.out.println((double)i/data.getStuFile().size());
         }
         workspace.unzipText.setText(ms+ems);
         workspace.unzipBar.setProgress(1);
+        }}).start();
     }
     
     public void handleExtractCode(){
+        new Thread(new Runnable() {
+           @Override public void run(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         CodeCheckData data = (CodeCheckData)app.getDataComponent();
         String mse="Successful code extraction:\n";
@@ -337,10 +366,16 @@ public class CodeCheckController {
         data.addSt5(hw);
         
         workspace.CodeBar.setProgress((double)i/data.getStuFile().size());
-        System.out.println((double)i/data.getStuFile().size());
+            try {
+                sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        //System.out.println((double)i/data.getStuFile().size());
         }
         workspace.workdText.setText(mse+msee);
         workspace.CodeBar.setProgress(1);
+        }}).start();
     }
     public String readZip(File f,String t,String p){
         String s="";
@@ -449,7 +484,22 @@ public class CodeCheckController {
     public void handleCodeCheck(){
         CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
         workspace.checkText.setText("Student Plaglarism Check Results can be found at\nhttp://www.exampleresults.edu");
-        workspace.checkBar.setProgress(1);
+        
+        new Thread(new Runnable() {
+           @Override public void run(){
+               for(int i=0;i<=10;i++){
+                   workspace.checkBar.setProgress((double)i/10);
+                   try {
+                       sleep(100);
+                   } catch (InterruptedException ex) {
+                       Logger.getLogger(CodeCheckController.class.getName()).log(Level.SEVERE, null, ex);
+                   }
+               }
+        
+        }}).start();
+        
+        
+        
     }
     public void handleViewResult(){
         Stage stage=new Stage();
