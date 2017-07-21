@@ -69,6 +69,7 @@ import sc.data.Homework;
 public class CodeCheckController {
     // THE APP PROVIDES ACCESS TO OTHER COMPONENTS AS NEEDED
     CodeCheckApp app;
+    CodeHW slFile;
     CodeHW selectedFile;
     int selectedIndex;
     String step1msg;
@@ -237,6 +238,7 @@ public class CodeCheckController {
     public void handleSelectFile(int s){
         if(s==1){
             CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+            slFile= workspace.blackboardView.getSelectionModel().getSelectedItem();
             selectedFile = workspace.blackboardView.getSelectionModel().getSelectedItem();
             selectedIndex = workspace.blackboardView.getSelectionModel().getSelectedIndex();
         }else if(s==2){
@@ -590,10 +592,7 @@ public class CodeCheckController {
             data.getZipFile().clear();
             handleZipFile();
         }else if (i==2){
-            CodeCheckData data = (CodeCheckData)app.getDataComponent();
-            //data.getUnzipFile().clear();
-            //System.out.println(selectedIndex);
-            //();
+            
         }else if(i==3){
             
         }else if(i==4){
