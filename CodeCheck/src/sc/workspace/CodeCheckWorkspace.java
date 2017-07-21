@@ -495,7 +495,13 @@ public class CodeCheckWorkspace extends AppWorkspaceComponent {
         viewButton.setOnAction(e->{
             controller.handleView(step);
         });
-        
+        refreshButton.setOnAction(e->{
+            try {
+                controller.handleRefresh(step);
+            } catch (IOException ex) {
+                Logger.getLogger(CodeCheckWorkspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
     
     

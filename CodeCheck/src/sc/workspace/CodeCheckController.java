@@ -5,6 +5,8 @@
  */
 package sc.workspace;
 
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
+import com.sun.javafx.application.HostServicesDelegate;
 import djf.ui.AppMessageDialogSingleton;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -34,6 +36,9 @@ import sc.data.CodeCheckData;
 import sc.workspace.CodeCheckWorkspace;
 import java.util.zip.*;
 import java.util.*;
+import javafx.application.HostServices;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -44,6 +49,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import sc.data.CodeHW;
@@ -451,7 +458,7 @@ public class CodeCheckController {
         VBox box=new VBox();
         
         Group root=new Group();
-        Scene scene=new Scene(root, 400, 80);
+        Scene scene=new Scene(root, 500, 500);
         stage.setScene(scene);
 
         GridPane grid=new GridPane();
@@ -459,13 +466,24 @@ public class CodeCheckController {
         grid.setVgap(5);
         grid.setHgap(5);
         scene.setRoot(grid);
-
+        
+        WebView browser=new WebView();
+        WebEngine web=browser.getEngine();
+        
+        link.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e){
+                web.load("http://www.exampleresults.edu");
+            }
+        });
+        
+        
         Label view=new Label(" Click the link below to review result:");
-        box.getChildren().addAll(view,link);
+        box.getChildren().addAll(view,link,browser);
         grid.getChildren().addAll(box);
         stage.sizeToScene();
         stage.show();
     }
+    
     public void handleView(int s){
         Stage stage=new Stage();
         stage.setTitle("View Information");
@@ -515,5 +533,23 @@ public class CodeCheckController {
         grid.getChildren().addAll(box);
         stage.sizeToScene();
         stage.show();
+    }
+    public void handleRefresh(int i) throws IOException{
+        if(i==1){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            data.getZipFile().clear();
+            handleZipFile();
+        }else if (i==2){
+            CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            //data.getUnzipFile().clear();
+            //System.out.println(selectedIndex);
+            //();
+        }else if(i==3){
+            
+        }else if(i==4){
+            
+        }else if(i==5){
+            
+        }
     }
 }

@@ -55,6 +55,8 @@ public class CodeCheckData implements AppDataComponent {
     public ObservableList <CodeHW> getZipFile(){
         return zipFile;
     }
+    
+    
     public void removeZipFile(CodeHW e){
         zipFile.remove(e);
     }
