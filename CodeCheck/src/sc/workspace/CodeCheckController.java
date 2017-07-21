@@ -432,11 +432,13 @@ public class CodeCheckController {
             CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
             CodeHW selected = (CodeHW)workspace.studentSubmitView.getSelectionModel().getSelectedItem();
             CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            selected.getFile().delete();
             data.removeUnzip(selected);
         }else if (i==3){
             CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
             CodeHW selected = (CodeHW)workspace.studentFileView.getSelectionModel().getSelectedItem();
             CodeCheckData data = (CodeCheckData)app.getDataComponent();
+            selected.getFile().delete();
             data.removeStuFile(selected);
         }
         else if (i==4){
@@ -468,9 +470,33 @@ public class CodeCheckController {
         grid.setVgap(5);
         grid.setHgap(5);
         scene.setRoot(grid);
-
-        Label remove=new Label(" Do you want to remove this item? ");
+        if(i==1){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        CodeHW selected = (CodeHW)workspace.blackboardView.getSelectionModel().getSelectedItem();
+        Label remove=new Label(" Do you want to remove  "+selected.getFileName());
         flow.getChildren().addAll(remove, okButton, canButton);
+        }else if(i==2){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        CodeHW selected = (CodeHW)workspace.studentSubmitView.getSelectionModel().getSelectedItem();
+        Label remove=new Label(" Do you want to remove  "+selected.getFileName());
+        flow.getChildren().addAll(remove, okButton, canButton);
+        }else if(i==3){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        CodeHW selected = (CodeHW)workspace.studentFileView.getSelectionModel().getSelectedItem();
+        Label remove=new Label(" Do you want to remove  "+selected.getFileName());
+        flow.getChildren().addAll(remove, okButton, canButton);
+        }else if(i==4){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        Homework selected = (Homework)workspace.workView.getSelectionModel().getSelectedItem();
+        Label remove=new Label(" Do you want to remove  "+selected.getFileName());
+        flow.getChildren().addAll(remove, okButton, canButton);
+        }else if(i==5){
+        CodeCheckWorkspace workspace = (CodeCheckWorkspace)app.getWorkspaceComponent();
+        Homework selected = (Homework)workspace.sworkView.getSelectionModel().getSelectedItem();
+        Label remove=new Label(" Do you want to remove  "+selected.getFileName());
+        flow.getChildren().addAll(remove, okButton, canButton);
+        }
+        
         grid.getChildren().addAll(flow);
         okButton.setOnAction(e->{
             handleRemove(i);
