@@ -3,14 +3,14 @@ Using javafx to create a software call Code Check app
 
 There are 5 steps to extract students' code from zip file:
 
-Extract submissions
+1.Extract submissions
 
-rename student submissions
+2.rename student submissions
 
-Unzip student submissions
+3.Unzip student submissions
 
-Extract Source Code
+4.Extract Source Code
 
-Code check
+5.Code check
 
 This app is GUI design and ensure that every button works properly
